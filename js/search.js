@@ -11,7 +11,7 @@ document.getElementById('searchForm').addEventListener('submit', function (e) {
     }
 
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', `https://restful-dictionary-service.vercel.app/api/definitions/?word=${encodeURIComponent(word)}`, true);
+    xhr.open('GET', `https://main--harmonious-belekoy-cd4e23.netlify.app/api/definitions/?word=${encodeURIComponent(word)}`, true);
 
     xhr.onload = function () {
         if (this.status == 200) {
