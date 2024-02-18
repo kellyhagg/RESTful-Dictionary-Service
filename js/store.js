@@ -1,17 +1,44 @@
-// Example JavaScript for handling the form submission
 document.getElementById('definitionForm').addEventListener('submit', function (e) {
-    e.preventDefault(); // Prevent actual form submission
+    e.preventDefault(); // Prevent the form from submitting in the traditional way
 
-    const feedbackAlert = document.getElementById('feedbackAlert');
+    var word = document.getElementById('wordInput').value;
+    var definition = document.getElementById('definitionArea').value;
+    var feedbackAlert = document.getElementById('feedbackAlert');
 
-    // Here you would typically make an AJAX request to submit the form data
-    // For demonstration, let's just show a success message
-    feedbackAlert.classList.remove('d-none', 'alert-danger');
-    feedbackAlert.classList.add('alert-success');
-    feedbackAlert.innerText = 'Definition added successfully!';
+    // Function to display feedback messages
+    function displayFeedback(message, isSuccess) {
+        feedbackAlert.className = 'alert';
+        if (isSuccess) {
+            feedbackAlert.classList.add('alert-success');
+        } else {
+            feedbackAlert.classList.add('alert-danger');
+        }
+        feedbackAlert.textContent = message;
+        feedbackAlert.classList.remove('d-none');
+    }
 
-    // If there was an error, you might do something like:
-    // feedbackAlert.classList.remove('d-none', 'alert-success');
-    // feedbackAlert.classList.add('alert-danger');
-    // feedbackAlert.innerText = 'Error adding definition.';
+    // Simple validation
+    if (!word || !definition) {
+        displayFeedback('Please fill in both the word and its definition.', false);
+        return;
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'https://yourDomainName2.wyz/api/definitions', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onload = function () {
+        if (this.status == 200 || this.status == 201) {
+            displayFeedback('Definition added successfully!', true);
+        } else {
+            displayFeedback('Failed to add definition. Please try again.', false);
+        }
+    };
+
+    xhr.onerror = function () {
+        // Handle network errors
+        displayFeedback('Network error occurred. Please try again.', false);
+    };
+
+    xhr.send(JSON.stringify({ word: word, definition: definition }));
 });

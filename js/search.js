@@ -1,21 +1,35 @@
-// Example dictionary object
-const dictionary = {
-    "book": "A set of printed pages, bound together and published.",
-    "apple": "A round fruit of a tree of the rose family, which typically has thin green or red skin and crisp flesh."
-};
-
 document.getElementById('searchForm').addEventListener('submit', function (e) {
-    e.preventDefault(); // Prevent form from submitting traditionally
+    e.preventDefault(); // Prevent the form from submitting the traditional way
 
-    const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-    const resultArea = document.getElementById('resultArea');
+    var word = document.getElementById('searchInput').value; // Updated to match the input ID
+    var resultArea = document.getElementById('resultArea'); // For displaying results
 
-    // Check if the term exists in the dictionary
-    if (dictionary[searchTerm]) {
-        // If the term is found, display it with its definition
-        resultArea.innerHTML = `<div class="alert alert-success"><strong>${searchTerm}</strong>: ${dictionary[searchTerm]}</div>`;
-    } else {
-        // If the term is not found, display an appropriate message
-        resultArea.innerHTML = `<div class="alert alert-danger">Request# 103, word '${searchTerm}' not found!</div>`;
+    // Simple validation
+    if (!word) {
+        resultArea.innerHTML = '<p class="text-danger">Please enter a word to search.</p>';
+        return;
     }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', `https://yourDomainName2.wyz/api/definitions/?word=${encodeURIComponent(word)}`, true);
+
+    xhr.onload = function () {
+        if (this.status == 200) {
+            var response = JSON.parse(this.responseText);
+            if (response.definition) {
+                resultArea.innerHTML = `<p class="text-success">Definition: ${response.definition}</p>`;
+            } else {
+                resultArea.innerHTML = '<p class="text-warning">Word not found.</p>';
+            }
+        } else {
+            resultArea.innerHTML = '<p class="text-danger">Failed to retrieve definition.</p>';
+        }
+    };
+
+    xhr.onerror = function () {
+        // Handle network errors
+        resultArea.innerHTML = '<p class="text-danger">Network error occurred.</p>';
+    };
+
+    xhr.send();
 });
