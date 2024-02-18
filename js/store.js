@@ -24,7 +24,7 @@ document.getElementById('definitionForm').addEventListener('submit', function (e
     }
 
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://yourDomainName2.wyz/api/definitions', true);
+    xhr.open('POST', 'https://restful-dictionary-service.vercel.app/api/definitions', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.onload = function () {
